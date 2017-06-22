@@ -48,7 +48,6 @@ mkdir $mauve_dir
 
 
 ##############################################################
-# Generate cds and peptide
 echo "Parsing Genbank files in $indir ......"
 for i in $indir/*gb; do 
 	bash genbank2cds.sh --gb $i --out_prefix ${i%.gb};
