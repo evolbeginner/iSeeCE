@@ -1,0 +1,1 @@
+/mnt/bay3/sswang/lian_xi/gc_test/scripts/help2run_orthomcl.sh

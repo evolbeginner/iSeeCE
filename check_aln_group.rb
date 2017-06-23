@@ -1,0 +1,1 @@
+/mnt/bay3/sswang/lian_xi/gc_test/scripts/check_aln_group.rb

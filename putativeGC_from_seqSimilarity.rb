@@ -1,0 +1,1 @@
+/mnt/bay3/sswang/lian_xi/gc_test/scripts/putativeGC_from_seqSimilarity.rb
