@@ -1,9 +1,11 @@
 #! /bin/bash
 
+
 # run_orthomcl:	run orthomcl automatically
 # last updated on 2014-04-08
 # To see its usage, please type 'run_orthomcl.sh --h' to see its usage.
 # Author: Sishuo Wang (sishuowang@hotmail.ca, wangsishuo@yeah.net, tomassonwss@gmail.com) from the department of Botany, the University of British Columbia
+
 
 ##########################################################################
 # fill in the path of the following two files here
@@ -29,7 +31,7 @@ do
 		blast_evalue=$2
 		shift
 		;;
-	--blast_CPU)
+	--blast_CPU|--cpu|--CPU)
 		echo "CPU of blast is $2"
 		blast_CPU=$2
 		shift
