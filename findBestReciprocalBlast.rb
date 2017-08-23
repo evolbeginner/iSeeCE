@@ -17,6 +17,7 @@ $sequence_dir = '../sequences'
 
 ##########################################################
 infile = nil
+outfile = nil
 evalue_cutoff = 1e-10
 n = 10
 target = nil
@@ -60,7 +61,7 @@ def analyze_flanking_orthologs(target, locus, n, best_reciprocal_info, num_posit
   if flanking_genes_with_positional_orthologs.size >= num_flanking_genes_with_positional_orthologs_min
     return flanking_genes_with_positional_orthologs.size
   else
-    return false
+    return 0
   end
 end
 
@@ -157,9 +158,29 @@ def read_summary_file(summary_file)
 end
 
 
+def output_results(outfile, results)
+  out_fh = (outfile.nil? or outfile == '-') ? STDOUT : File.open(outfile, 'w')
+  results.each_with_index do |arr1, index|
+    if index % 2 == 0
+      if index+1 <= results.size-1
+        arr2 = results[index+1]
+        #if [arr1, arr2].select{|arr|arr[2] != false and arr[2]>=2}.size == 2
+        locus = arr1[0]
+        out_fh.puts [locus, arr1[1,2], arr2[1,2]].flatten.join("\t")
+        #end
+      end
+    else
+      next
+    end
+  end
+  out_fh.close if ! outfile.nil?
+end
+
+
 ##########################################################
 opts = GetoptLong.new(
   ['-i', GetoptLong::REQUIRED_ARGUMENT],
+  ['-o', GetoptLong::REQUIRED_ARGUMENT],
   ['-e', '--evalue', GetoptLong::REQUIRED_ARGUMENT],
   ['-n', GetoptLong::REQUIRED_ARGUMENT],
   ['--gene', GetoptLong::REQUIRED_ARGUMENT],
@@ -174,6 +195,8 @@ opts.each do |opt, value|
   case opt
     when /^-i$/
       infile = value
+    when /^-o$/
+      outfile = value
     when /^(--evalue|-e)$/
       evalue_cutoff = value.to_f
     when /^-n$/
@@ -219,18 +242,6 @@ end
 
 
 ##########################################################
-results.each_with_index do |arr1, index|
-  if index % 2 == 0
-    if index+1 <= results.size-1
-      arr2 = results[index+1]
-      if [arr1, arr2].select{|arr|arr[2] != false and arr[2]>=2}.size == 2
-        locus = arr1[0]
-        puts [locus, arr1[1,2], arr2[1,2]].flatten.join("\t")
-      end
-    end
-  else
-    next
-  end
-end
+output_results(outfile, results)
 
 

@@ -28,6 +28,8 @@ NC='\e[0m' # No Color
 
 ##############################################################
 # Variables
+gc_count_min=5
+ortholog_count_min=2
 is_force=false
 blast_cpu=2
 mafft_cpu=2
@@ -58,11 +60,20 @@ function run_orthomcl(){
 	local help2run_orthomcl=$3
 	local blast_cpu=$4
 
-	echo "Running OrthoMCL (which usually takes a longt time) ......"
+	echo "Running OrthoMCL (which usually takes a long time) ......"
 	run_orthomcl_cmd=`bash $help2run_orthomcl --indir $indir --cpu $blast_cpu`
 	cd $orthomcl_dir >/dev/null
 	$run_orthomcl_cmd 1>/dev/null 2>/dev/null
-	for i in 6 4 2; do mcl mclInput --abc -I $i -o mclOutput$i 2>/dev/null; done
+
+	processbar 1 4
+	count=1
+	for i in 6 4 2; do
+		mcl mclInput --abc -I $i -o mclOutput$i 2>/dev/null
+		count=`expr $count + 1`
+		processbar $count 4
+	done
+	echo ''
+
 	cp mclOutput mclOutput1.5
 	cd - >/dev/null
 }
@@ -140,9 +151,35 @@ function findBestReciprocalBlast(){
 	local full_length_dir=$1
 	local findBestReciprocalBlast=$2
 
-	echo "Finding potential converted genes by gene synteny based on best reciprocal BLAST hits ......"
+	echo "Finding potential converted genes by gene synteny based on "
+	echo "best reciprocal BLAST hits ......"
 	cd $full_length_dir >/dev/null
-	$ruby $findBestReciprocalBlast -i ../OrthoMCL/all_VS_all.out.tab --summary ../FastTree/trees.summary
+	$ruby $findBestReciprocalBlast -i ../OrthoMCL/all_VS_all.out.tab --summary ../FastTree/trees.summary -o ../FastTree/GC.raw_result
+
+	if [ $? == 0 ]; then
+		for i in `seq 10`; do processbar $i 10; sleep 0.1; done
+	fi
+	echo ''
+
+	cd - >/dev/null
+}
+
+
+function getCandidateGC(){
+	local full_length_dir=$1
+	local getCandidateGC=$2
+	local gc_count_min=$3
+	local ortholog_count_min=$4
+
+	echo "Generating final output ......"
+	cd $full_length_dir >/dev/null
+	$ruby $getCandidateGC -i ../FastTree/GC.raw_result --gc_count_min $gc_count_min --ortho_count_min $ortholog_count_min > ../FastTree/GC.result
+
+	if [ $? == 0 ]; then
+		for i in `seq 10`; do processbar $i 10; sleep 0.1; done;
+		echo -e "\nDone!";
+	fi
+
 	cd - >/dev/null
 }
 
@@ -211,6 +248,14 @@ while [ $# -gt 0 ]; do
 			outdir=$2
 			shift
 			;;
+		--gc_count_min|--GC_count_min)
+			gc_count_min=$2
+			shift
+			;;
+		--ortho_count_min|--ortholog_count_min)
+			ortholog_count_min=$2
+			shift
+			;;
 		--force)
 			is_force=true
 			;;
@@ -267,6 +312,7 @@ check_aln_group=$CWD/check_aln_group.rb
 help2run_orthomcl=$CWD/help2run_orthomcl.sh
 newFastTreeWrapper=$CWD/newFastTreeWrapper.sh
 findBestReciprocalBlast=$CWD/findBestReciprocalBlast.rb
+getCandidateGC=$CWD/getCandidateGC.rb
 
 
 ##############################################################
@@ -282,7 +328,7 @@ mkdir -p $orthomcl_dir
 mkdir -p $fasttree_dir/trees
 mkdir -p $full_length_dir/flanking2
 
-ln -s $indir $outdir/sequences
+ln -s $indir $outdir/sequences 2>/dev/null
 
 
 ##############################################################
@@ -298,7 +344,9 @@ parse_genbank_files $indir $genbank2cds
 
 parse_FastTree $fasttree_dir $newFastTreeWrapper
 
-findBestReciprocalBlast $full_length_dir $findBestReciprocalBlast 
+findBestReciprocalBlast $full_length_dir $findBestReciprocalBlast
+
+getCandidateGC $full_length_dir $getCandidateGC $gc_count_min $ortholog_count_min
 
 
 ##############################################################
