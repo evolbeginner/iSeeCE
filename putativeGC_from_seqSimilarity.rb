@@ -18,8 +18,11 @@ is_de_prefix = false
 length_min = 30
 bootstrap_min = nil
 is_no_bootstrap = false
+otu_min = 0
+otu_max = 10000
 
 geneconv_info = Hash.new
+mauve_rela = Hash.new
 
 
 ####################################################################
@@ -96,7 +99,7 @@ def parse_infile(infile, seq_objs, length_min, mauve_rela, mauve_size_min)
 end
 
 
-def parse_tree_file(tree_file, bootstrap_min, mauve_rela, mauve_size_min, is_no_bootstrap)
+def parse_tree_file(tree_file, bootstrap_min, mauve_rela, mauve_size_min, is_no_bootstrap, otu_min, otu_max)
   posi_pairs = Hash.new
   treeio = Bio::FlatFile.open(Bio::Newick, tree_file)
   tree = treeio.next_entry.tree
@@ -104,6 +107,10 @@ def parse_tree_file(tree_file, bootstrap_min, mauve_rela, mauve_size_min, is_no_
   bootstrap_style = nil
 
   file_corename = get_corename_of_file(tree_file)
+  if ! (tree.nodes.select{|i|i.name=~/\w/}.size >= otu_min and tree.nodes.select{|i|i.name=~/\w/}.size <= otu_max)
+    return
+  end
+
   tree.nodes.each do |node|
     next if node.name !~ /\w/
     node.name.gsub!(" ", "_")
@@ -143,11 +150,19 @@ def parse_tree_file(tree_file, bootstrap_min, mauve_rela, mauve_size_min, is_no_
       next if neighbor_node.name !~ /\w/
       orgn2, corename2 = neighbor_node.name.split('|')
       next if orgn1 != orgn2
-      next if not (mauve_rela.include?(corename1) and mauve_rela.include?(corename2) and mauve_rela[corename1].size >= mauve_size_min and mauve_rela[corename2].size >= mauve_size_min)
+      if not mauve_rela.empty?
+        next if not (mauve_rela.include?(corename1) and mauve_rela.include?(corename2) and mauve_rela[corename1].size >= mauve_size_min and mauve_rela[corename2].size >= mauve_size_min)
+      end
       gene1, gene2 = node.name, neighbor_node.name
+      next if gene1 =~ /[ ]/ or gene2 =~ /[ ]/
       pair = [gene1, gene2].sort.join("\t")
       next if posi_pairs.include?(pair)
-      puts [tree_file, [gene1, gene2].sort, mauve_rela[corename1].join(','), mauve_rela[corename2].join(','), parent_node.bootstrap].flatten.join("\t")
+
+      if not mauve_rela.empty?
+        puts [tree_file, [gene1, gene2].sort, mauve_rela[corename1].join(','), mauve_rela[corename2].join(','), parent_node.bootstrap].flatten.join("\t")
+      else
+        puts [tree_file, [gene1, gene2].sort, parent_node.bootstrap].flatten.join("\t")
+      end
       posi_pairs[pair] = ""
     end
   end
@@ -273,6 +288,7 @@ opts = GetoptLong.new(
   ["--length_min", GetoptLong::REQUIRED_ARGUMENT],
   ['-b', "--bootstrap", "--bootstrap_min", GetoptLong::REQUIRED_ARGUMENT],
   ["--no_bootstrap", GetoptLong::NO_ARGUMENT],
+  ["--otu_minmax", GetoptLong::REQUIRED_ARGUMENT],
 )
 
 
@@ -300,6 +316,8 @@ opts.each do |opt, value|
       bootstrap_min = value.to_f
     when '--no_bootstrap'
       is_no_bootstrap = true
+    when '--otu_minmax'
+      otu_min, otu_max = value.split(',').map{|i|i.to_i}
   end
 end
 
@@ -310,7 +328,7 @@ tree_files.flatten!
 
 
 ####################################################################
-mauve_rela = read_mauve(mauve_file)
+mauve_rela = read_mauve(mauve_file) if ! mauve_file.nil?
 
 if not geneconv_files.empty?
   geneconv_files.each do |geneconv_file|
@@ -324,7 +342,7 @@ elsif not infiles.empty?
   end
 elsif not tree_files.empty?
   tree_files.each do |tree_file|
-    parse_tree_file(tree_file, bootstrap_min, mauve_rela, mauve_size_min, is_no_bootstrap)
+    parse_tree_file(tree_file, bootstrap_min, mauve_rela, mauve_size_min, is_no_bootstrap, otu_min, otu_max)
   end
 else
   puts "geneconv_file, seqfile or tree_file has to be given! Exiting ......"

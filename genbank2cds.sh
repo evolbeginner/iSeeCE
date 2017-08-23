@@ -51,7 +51,7 @@ ruby $extractGenomeFromGenbank -i $gb_file --no_plasmid > $out_genome
 
 ruby $genbank2gff --seq $gb_file --feature gene,CDS > $out_gff
 
-perl $gff2fasta --gff $out_gff -d --fasta $out_genome --feature CDS --length 1 --out $out_cds --attribute ID --no_process_seqid >/dev/null
+perl $gff2fasta --gff $out_gff -d --fasta $out_genome --feature CDS --length 1 --out $out_cds --attribute ID --no_process_seqid --with_ambiguous_posi >/dev/null
 sed -i '/^>/s/|.\+//' $out_cds
 
 ruby $translate_seq -i $out_cds -o $out_pep

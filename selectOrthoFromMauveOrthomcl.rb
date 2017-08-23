@@ -20,6 +20,7 @@ group_size_max = nil
 mauve_size_min = nil
 mauve_size_max = nil
 outdir = nil
+cpu = 1
 is_force = false
 is_output = true
 
@@ -86,7 +87,7 @@ def read_seq(seq_file, prefix)
 end
 
 
-def output_seq(orthomcl_groups, seq_objs, prefix_rela, outdir)
+def output_seq(orthomcl_groups, seq_objs, prefix_rela, outdir, cpu)
   orthomcl_groups.each_with_index do |orthomcl_group, index|
     outfile = File.join([outdir, (index+1).to_s+".fas"])
     out_aln = File.join([outdir, (index+1).to_s+".aln"])
@@ -97,7 +98,7 @@ def output_seq(orthomcl_groups, seq_objs, prefix_rela, outdir)
       out_fh.puts seq_objs[gene].seq
     end
     out_fh.close
-    `mafft --quiet #{outfile} > #{out_aln}`
+    `mafft --thread #{cpu} --quiet #{outfile} > #{out_aln}`
   end
 end
 
@@ -114,6 +115,7 @@ opts = GetoptLong.new(
   ['--group_size', GetoptLong::REQUIRED_ARGUMENT],
   ['--mauve_size', GetoptLong::REQUIRED_ARGUMENT],
   ['--outdir', GetoptLong::REQUIRED_ARGUMENT],
+  ['--cpu', GetoptLong::REQUIRED_ARGUMENT],
   ['--force', GetoptLong::NO_ARGUMENT],
   ['--no_output', GetoptLong::NO_ARGUMENT],
 )
@@ -141,6 +143,8 @@ opts.each do |opt, value|
       mauve_size_min, mauve_size_max = value.split(',').map{|i|i.to_i}
     when "--outdir"
       outdir = value
+    when "--cpu"
+      cpu = value.to_i
     when "--force"
       is_force = true
     when "--no_output"
@@ -198,11 +202,11 @@ seq_files.each_with_index do |seq_file, index|
   prefix_rela.merge!(arr[1])
 end
 
-mauve_rela = read_mauve(mauve_file)
+mauve_rela = read_mauve(mauve_file) if ! mauve_file.nil?
 
 orthomcl_groups = get_orthomcl(orthomcl_file, mauve_rela, group_size_min, group_size_max, mauve_size_min, mauve_size_max)
 puts orthomcl_groups.size
 
-output_seq(orthomcl_groups, seq_objs, prefix_rela, outdir) if is_output
+output_seq(orthomcl_groups, seq_objs, prefix_rela, outdir, cpu) if is_output
 
 
