@@ -15,7 +15,9 @@ Type iSeeGC.sh -h to the help message.
 
 # Copyright and Licence:
 No copyright is required for iSeeGC.
+
 This product includes a free script (gff2fasta.pl) developed by Michael Imelfort.
+
 There are also other software employed. Please cite corresponding papers for the use of them.
 * [OrthoMCL](http://orthomcl.org/orthomcl/) 
 * [MAFFT](http://mafft.cbrc.jp/alignment/software/)
