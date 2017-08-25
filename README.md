@@ -14,7 +14,7 @@ Type iSeeGC.sh -h to the help message.
 ![alt text](https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/220px-Google_2015_logo.svg.png)
 
 # Copyright and Licence:
-No copyright is required for iSeeGC.
+**No copyright** is required for iSeeGC.
 
 This product includes a free script (gff2fasta.pl) developed by Michael Imelfort.
 
