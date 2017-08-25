@@ -4,7 +4,7 @@
 # run_orthomcl:	run orthomcl automatically
 # last updated on 2014-04-08
 # To see its usage, please type 'run_orthomcl.sh --h' to see its usage.
-# Author: Sishuo Wang (sishuowang@hotmail.ca, wangsishuo@yeah.net, tomassonwss@gmail.com) from the department of Botany, the University of British Columbia
+# Author: Sishuo Wang (sishuowang@hotmail.com; wangsishuo@yeah.net) from the department of Botany, the University of British Columbia
 
 
 ##########################################################################
