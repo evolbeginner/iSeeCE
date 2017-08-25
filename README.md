@@ -5,7 +5,7 @@ iSeeGC is a powerfull bioinformatic pipeline that allows identifying recurrent g
 # Installation
 iSeeGC is run in Linux environment.
 
-Many scripts included in this product are from
+Many scripts included in this product require packages from
 * [BioRuby](http://bioruby.org)
 * [BioPerl](http://bioperl.org)
 
@@ -14,7 +14,6 @@ This product also employs several other computational tools. Please ensure that 
 * [MAFFT](http://mafft.cbrc.jp/alignment/software/)
 * [FastTree](http://darlinglab.org/blog/2015/03/23/not-so-fast-fasttree.html)
 * [RAxML](https://sco.h-its.org/exelixis/software.html)
-
 
 Please type **"bash check_requirements.sh"** to see whether required software and libraries have been installed.
 
