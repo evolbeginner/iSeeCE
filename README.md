@@ -1,6 +1,6 @@
 # iSeeGC
 
-iSeeGC is a bioinformatic pipeline that allows identifying recurrent gene conversion across lineages. It is written by [Sishuo Wang](https://orcid.org/0000-0002-7220-7305) (sishuowang{at}hotmail.com) from University of British Columbia.
+iSeeGC is a bioinformatic pipeline that allows identifying recurrent gene conversion across lineages. It is written by [Sishuo Wang](http://www.researcherid.com/rid/F-8081-2015) (sishuowang{at}hotmail.com) from University of British Columbia.
 
 # Installation
 iSeeGC is run in Linux environment.
