@@ -5,7 +5,7 @@ iSeeGC is a powerfull bioinformatic pipeline that allows identifying recurrent g
 # Installation
 iSeeGC is run in Linux environment.
 
-Please type "bash check_requirements.sh to see whether required software and libraries have been installed."
+Please type **"bash check_requirements.sh"** to see whether required software and libraries have been installed.
 
 # Usage
 Type iSeeGC.sh -h to the help message.
