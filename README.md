@@ -11,7 +11,7 @@ Please type **"bash check_requirements.sh"** to see whether required software an
 Type iSeeGC.sh -h to the help message.
 
 # Caveats:
-![alt text](http://url/to/img.png)
+![alt text](https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/220px-Google_2015_logo.svg.png)
 
 # Copyright and Licence:
 No copyright is required for iSeeGC.
