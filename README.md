@@ -2,6 +2,9 @@
 
 iSeeGC is a powerfull bioinformatic pipeline that allows identifying recurrent gene conversion across lineages.
 
+# Author
+Sishuo Wang (sishuowang@hotmail.com), Beaty Biodiversity Centre, University of British Columbia, Canada
+
 # Installation
 iSeeGC is run in Linux environment.
 
@@ -21,7 +24,7 @@ Please type **"bash check_requirements.sh"** to see whether required software an
 # Usage
 Type iSeeGC.sh -h to the help message.
 
-# Caveats:
+# Caveats
 ![alt text](https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/220px-Google_2015_logo.svg.png)
 
 # Copyright and Licence:
