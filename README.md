@@ -15,7 +15,6 @@ This product also employs several other computational tools. Please ensure that 
 * [FastTree](http://darlinglab.org/blog/2015/03/23/not-so-fast-fasttree.html)
 * [RAxML](https://sco.h-its.org/exelixis/software.html)
 
-There is also a free script gff2fasta.pl that is developed by Michael Imelfort included.
 
 Please type **"bash check_requirements.sh"** to see whether required software and libraries have been installed.
 
@@ -29,4 +28,8 @@ Type iSeeGC.sh -h to the help message.
 **No copyright** is required for iSeeGC.
 
 Please cite coppresponding papers for the use of OrthoMCL, MAFFT, FastTree, RAxML, BioRuby and BioPerl.
+
+# Acknowledgements
+Thanks for Michael Imelfort and Kranti Konganti for sharing the free script gff2fasta.pl for sequence processing.
+
 
