@@ -16,16 +16,10 @@ This product also employs several other computational tools. Please ensure that 
 * [RAxML](https://sco.h-its.org/exelixis/software.html)
 
 
-Please type 
-
-```bash
-bash check_requirements.sh
-```
-
-to see whether required software and libraries have been installed.
+Please type **bash check_requirements.sh** to see whether required software and libraries have been installed.
 
 # Usage
-Type iSeeGC.sh -h to the help message.
+Please type **iSeeGC.sh -h** to the full usage.
 
 # Caveats
 ![alt text](https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/220px-Google_2015_logo.svg.png)
@@ -35,7 +29,7 @@ Type iSeeGC.sh -h to the help message.
 
 Please see [CC0](https://creativecommons.org/share-your-work/public-domain/cc0/) for licensing information.
 
-You are welcome to cite our paper for iSeeGC if you feel it is useful.
+You are welcome to cite our paper coming soon for iSeeGC if you feel it is useful.
 
 You may need to cite corresponding papers for the use of OrthoMCL, MAFFT, FastTree, RAxML, BioRuby and BioPerl.
 
