@@ -26,7 +26,7 @@ Please type **iSeeGC.sh -h** to the full usage.
 ![alt text](https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/220px-Google_2015_logo.svg.png)
 
 # Copyright and Licence:
-**No copyright reserved** for iSeeGC. Please see [CC0](https://creativecommons.org/share-your-work/public-domain/cc0/) for licensing information.
+Please see [CC0](https://creativecommons.org/share-your-work/public-domain/cc0/) for licensing information.
 
 You are welcome to cite our paper coming soon for iSeeGC if you feel it is useful.
 
