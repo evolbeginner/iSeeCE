@@ -1,6 +1,9 @@
 #! /bin/env ruby
 
 
+# alt name: findBestReciprocalBlast.rb
+
+
 ##########################################################
 require 'getoptlong'
 

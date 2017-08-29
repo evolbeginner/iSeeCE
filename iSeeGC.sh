@@ -10,7 +10,9 @@ CWD=`dirname $0`
 cd $CWD >/dev/null
 CWD=`pwd`
 cd - >/dev/null
+
 source "$CWD/scripts/processbar.sh"
+source "$CWD/word_limit_per_line.sh"
 
 
 ##############################################################
@@ -197,13 +199,28 @@ function usage(){
 	echo
 	echo -e "${BOLD}USAGE$NC"
 	echo -e "Required arguments:"
-	echo -e "--indir"
-	echo -e "--outdir"
+	echo -e "--indir\t\t\t\t\tThe directory containing input files in the format of Genbank"
+	echo
+
+	echo -e "--outdir\t\t\t\tThe output directory (cannot be the current directory)"
+	echo
 	#echo -e "--transcript|--transcript_gtftranscript gtf file"
 	echo "Optional arguments:"
-	echo -e "-h|--h|--help\t\thelp"
+
+	echo -ne "--gc_count_min|--GC_count_min\t\t"
+	word_limit_per_line "The minimum of the number of converted genes" 38
+	echo -e "\t\t\t\t\tdefault: 5"
 	echo
-	echo "Feel free to use, edit and deliver the codes for any use."
+
+	echo -ne "--ortho_count_min|--ortholog_count_min\t"
+	word_limit_per_line "The minimum of the number of syntenic orthologs in the flanking region of a converted gene" 38 40
+	echo -e "\t\t\t\t\tdefault: 2"
+	echo
+
+	echo -e "-h|--h|--help\t\t\t\thelp message"
+	echo
+
+	echo -e "Feel free to use, edit and deliver the codes for any use."
 	echo -e "Please write to sishuowang@hotmail.com for bug report or any question. Your help is highly appreciated!"
 	echo
 	exit 1
@@ -239,7 +256,7 @@ function determine_YN(){
 while [ $# -gt 0 ]; do
 	case $1 in
 		--indir)
-			cd $2 >/dev/null
+			cd $2 >/dev/null 2>&1
 			indir=$PWD
 			cd - >/dev/null
 			shift
@@ -280,6 +297,16 @@ done
 
 
 ##############################################################
+if [ -z $indir ]; then
+	echo -e "${BOLD}indir$NC has to be given by '--indir'!"
+	usage
+elif [ -z $outdir ]; then
+	echo -e "${BOLD}outdir$NC has to be given by '--outdir'!"
+	usage
+fi
+
+
+##############################################################
 if [ -d $outdir ]; then
 	if [ $outdir == '.' -o $outdir == './' ]; then
 		echo "outdir cannot be the current directory! Exiting ......"
@@ -311,7 +338,7 @@ selectOrthoFromMauveOrthomcl=$CWD/selectOrthoFromMauveOrthomcl.rb
 check_aln_group=$CWD/check_aln_group.rb
 help2run_orthomcl=$CWD/help2run_orthomcl.sh
 newFastTreeWrapper=$CWD/newFastTreeWrapper.sh
-findBestReciprocalBlast=$CWD/findBestReciprocalBlast.rb
+findBestReciprocalBlast=$CWD/bestHit.rb
 getCandidateGC=$CWD/getCandidateGC.rb
 
 
