@@ -35,6 +35,7 @@ ortholog_count_min=2
 is_force=false
 blast_cpu=2
 mafft_cpu=2
+is_mauve=false
 
 
 ##############################################################
@@ -217,6 +218,31 @@ function usage(){
 	echo -e "\t\t\t\t\tdefault: 2"
 	echo
 
+	echo -ne "--blast_cpu\t\t\t\t"
+	echo "The number of threads for BLASTp"
+	echo -e "\t\t\t\t\tdefault: 2"
+	echo
+
+	echo -ne "--mafft_cpu\t\t\t\t"
+	echo "The number of threads for MAFFT"
+	echo -e "\t\t\t\t\tdefault: 2"
+	echo
+
+	echo -ne "--is_mauve|--is_Mauve\t\t\t"
+	word_limit_per_line "Identification of syntenic orthologs will be performed with Mauve." 38 40
+	echo -e "\t\t\t\t\tdefault: disabled"
+	echo
+
+	echo -ne "--mauve|--Mauve\t\t\t\t"
+	echo "The path to progressiveMauve"
+	echo -e "\t\t\t\t\tdefault: disabled"
+	echo
+
+	echo -ne "--mauve_jar|--Mauve_jar\t\t\t"
+	echo "The path to mauve.jar"
+	echo -e "\t\t\t\t\tdefault: disabled"
+	echo
+
 	echo -e "-h|--h|--help\t\t\t\thelp message"
 	echo
 
@@ -273,9 +299,6 @@ while [ $# -gt 0 ]; do
 			ortholog_count_min=$2
 			shift
 			;;
-		--force)
-			is_force=true
-			;;
 		--blast_cpu)
 			blast_cpu=$2
 			shift
@@ -283,6 +306,12 @@ while [ $# -gt 0 ]; do
 		--mafft_cpu)
 			mafft_cpu=$2
 			shift
+			;;
+		--is_mauve)
+			is_mauve=true
+			;;
+		--force)
+			is_force=true
 			;;
 		-h|--h|--help)
 			usage
@@ -361,7 +390,7 @@ ln -s $indir $outdir/sequences 2>/dev/null
 ##############################################################
 parse_genbank_files $indir $genbank2cds
 
-#run_mauve $mauve_dir $Mauve $Mauve_jar
+[ $is_mauve == true ] && run_mauve $mauve_dir $Mauve $Mauve_jar
 
 #run_orthomcl $indir $orthomcl_dir $help2run_orthomcl $blast_cpu
 
