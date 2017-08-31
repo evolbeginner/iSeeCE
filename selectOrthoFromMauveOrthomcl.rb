@@ -26,6 +26,7 @@ is_output = true
 
 seq_objs = Hash.new
 prefix_rela = Hash.new
+mauve_rela = Hash.new
 
 
 #######################################################################
@@ -61,7 +62,7 @@ def get_orthomcl(orthomcl_file, mauve_rela, group_size_min, group_size_max, mauv
     next if orgns.inject(Hash.new(0)) {|hash,word| hash[word] += 1; hash}.values.count{|i|i>1} < 2
 
     genes.each do |gene|
-      if mauve_rela.include?(gene) and ! mauve_rela[gene].empty?
+      if ! mauve_rela.empty? and ! mauve_rela[gene].empty? and mauve_rela.include?(gene)
         temp_rela[gene] = genes.select{|i|i!=gene}.map{|i|i if mauve_rela[gene].include?(i)}.compact
       end
     end
@@ -202,7 +203,7 @@ seq_files.each_with_index do |seq_file, index|
   prefix_rela.merge!(arr[1])
 end
 
-mauve_rela = read_mauve(mauve_file) if ! mauve_file.nil?
+mauve_rela = read_mauve(mauve_file) if ! mauve_file.nil? and File.exists?(mauve_file)
 
 orthomcl_groups = get_orthomcl(orthomcl_file, mauve_rela, group_size_min, group_size_max, mauve_size_min, mauve_size_max)
 puts orthomcl_groups.size

@@ -17,8 +17,8 @@ source "$CWD/word_limit_per_line.sh"
 
 ##############################################################
 # Path to Mauve
-Mauve=/mnt/bay3/sswang/software/genome/mauve_snapshot_2015-02-13/linux-x64/progressiveMauve
-Mauve_jar=/mnt/bay3/sswang/software/genome/mauve_snapshot_2015-02-13/Mauve.jar
+Mauve=''
+Mauve_jar=''
 ruby=ruby
 
 
@@ -35,6 +35,7 @@ ortholog_count_min=2
 is_force=false
 blast_cpu=2
 mafft_cpu=2
+bootstrap=0
 is_mauve=false
 
 
@@ -60,8 +61,7 @@ function parse_genbank_files(){
 function run_orthomcl(){
 	local indir=$1
 	local orthomcl_dir=$2
-	local help2run_orthomcl=$3
-	local blast_cpu=$4
+	local blast_cpu=$3
 
 	echo "Running OrthoMCL (which usually takes a long time) ......"
 	run_orthomcl_cmd=`bash $help2run_orthomcl --indir $indir --cpu $blast_cpu`
@@ -142,17 +142,35 @@ function run_FastTree(){
 
 function parse_FastTree(){
 	local fasttree_dir=$1
-	local newFastTreeWrapper=$2
+	local mauve_dir=$2
+	local ortholog_count_min=$3
+	local bootstrap_min=$4
+	local is_mauve=$5
+
+	local count=0
 
 	echo "Parsing FastTree result ......"
+	if [ $is_mauve == true ]; then
+		####
+		[ -f $fasttree_dir/trees.mauve.FastTree_result ] && rm $fasttree_dir/trees.mauve.FastTree_result
+		local total=`ls -1 $fasttree_dir/trees/* | wc -l`
+		for i in $fasttree_dir/trees/*; do
+			count=`expr $count + 1`
+			processbar $count $total
+			$ruby $putativeGC_from_seqSimilarity --tree $i --mauve $mauve_dir/mauve.ortho -b 0 >> $fasttree_dir/trees.mauve.FastTree_result 2>/dev/null
+		done
+		$ruby $convertMauveResultToRawResult -i $fasttree_dir/trees.mauve.FastTree_result --ortho_count_min $ortholog_count_min > $fasttree_dir/GC.mauve.raw_result
+	fi
+
 	bash $newFastTreeWrapper --n1 1 --n2 6 --min 3 -b 0.9 -o $fasttree_dir/trees.FastTree_result --indir $fasttree_dir/trees --o2 $fasttree_dir/trees.summary
-	#for i in $fasttree_dir/trees/*; do $ruby $CWD/putativeGC_from_seqSimilarity.rb --tree $i --mauve mauve/mauve.ortho -b 0; done > FastTree/trees.FastTree_result 2>/dev/null
 }
 
 
 function findBestReciprocalBlast(){
 	local full_length_dir=$1
-	local findBestReciprocalBlast=$2
+	local is_mauve=$2
+	
+	#[ $is_mauve == true ] && return
 
 	echo "Finding potential converted genes by gene synteny based on "
 	echo "best reciprocal BLAST hits ......"
@@ -170,13 +188,18 @@ function findBestReciprocalBlast(){
 
 function getCandidateGC(){
 	local full_length_dir=$1
-	local getCandidateGC=$2
-	local gc_count_min=$3
-	local ortholog_count_min=$4
+	local gc_count_min=$2
+	local ortholog_count_min=$3
+	local bootstrap_min=$4
+	local is_mauve=$5
 
 	echo "Generating final output ......"
 	cd $full_length_dir >/dev/null
-	$ruby $getCandidateGC -i ../FastTree/GC.raw_result --gc_count_min $gc_count_min --ortho_count_min $ortholog_count_min > ../FastTree/GC.result
+
+	if [ $is_mauve == true ]; then
+		$ruby $getCandidateGC -i ../FastTree/GC.mauve.raw_result --gc_count_min $gc_count_min --ortho_count_min $ortholog_count_min -b $bootstrap_min > ../FastTree/GC.mauve.result
+	fi
+	$ruby $getCandidateGC -i ../FastTree/GC.raw_result --gc_count_min $gc_count_min --ortho_count_min $ortholog_count_min -b $bootstrap_min > ../FastTree/GC.result
 
 	if [ $? == 0 ]; then
 		for i in `seq 10`; do processbar $i 10; sleep 0.1; done;
@@ -239,7 +262,7 @@ function usage(){
 	echo
 
 	echo -ne "--mauve_jar|--Mauve_jar\t\t\t"
-	echo "The path to mauve.jar"
+	echo "The path to Mauve.jar"
 	echo -e "\t\t\t\t\tdefault: disabled"
 	echo
 
@@ -307,8 +330,20 @@ while [ $# -gt 0 ]; do
 			mafft_cpu=$2
 			shift
 			;;
+		-b|--bootstrap)
+			bootstrap_min=$2
+			shift
+			;;
 		--is_mauve)
 			is_mauve=true
+			;;
+		--mauve)
+			Mauve=$2
+			shift
+			;;
+		--mauve_jar)
+			Mauve_jar=$2
+			shift
 			;;
 		--force)
 			is_force=true
@@ -317,7 +352,7 @@ while [ $# -gt 0 ]; do
 			usage
 			;;
 		*)
-			echo "Unknown argument $1. Exiting ......"
+			echo -e "Unknown argument ${BOLD}$1${NC}. Exiting ......"
 			usage
 			;;
 	esac
@@ -326,12 +361,21 @@ done
 
 
 ##############################################################
+# check arguments
 if [ -z $indir ]; then
 	echo -e "${BOLD}indir$NC has to be given by '--indir'!"
 	usage
 elif [ -z $outdir ]; then
 	echo -e "${BOLD}outdir$NC has to be given by '--outdir'!"
 	usage
+elif [ $is_mauve == true ]; then
+	if [ -z "$Mauve" -o ! -f "$Mauve" ]; then
+		echo "Mauve has to be given by '--mauve' if '--is_mauve' is specified."
+		usage
+	elif [ -z "$Mauve_jar" -o ! -f "$Mauve_jar" ]; then
+		echo "Mauve_jar has to be given by '--mauve_jar' if '--is_mauve' is specified."
+		usage
+	fi
 fi
 
 
@@ -367,6 +411,9 @@ selectOrthoFromMauveOrthomcl=$CWD/selectOrthoFromMauveOrthomcl.rb
 check_aln_group=$CWD/check_aln_group.rb
 help2run_orthomcl=$CWD/help2run_orthomcl.sh
 newFastTreeWrapper=$CWD/newFastTreeWrapper.sh
+convertMauveResultToRawResult=$CWD/convertMauveResultToRawResult.rb
+putativeGC_from_seqSimilarity=$CWD/putativeGC_from_seqSimilarity.rb
+filterFastTree=$CWD/filterFastTree.rb
 findBestReciprocalBlast=$CWD/bestHit.rb
 getCandidateGC=$CWD/getCandidateGC.rb
 
@@ -388,21 +435,21 @@ ln -s $indir $outdir/sequences 2>/dev/null
 
 
 ##############################################################
-parse_genbank_files $indir $genbank2cds
+#parse_genbank_files $indir $genbank2cds
 
-[ $is_mauve == true ] && run_mauve $mauve_dir $Mauve $Mauve_jar
+#[ $is_mauve == true ] && run_mauve $mauve_dir $Mauve $Mauve_jar
 
-#run_orthomcl $indir $orthomcl_dir $help2run_orthomcl $blast_cpu
+#run_orthomcl $indir $orthomcl_dir $blast_cpu
 
 #run_mafft $outdir $aln_dir $selectOrthoFromMauveOrthomcl $check_aln_group $mafft_cpu
 
 #run_FastTree $aln_dir
 
-parse_FastTree $fasttree_dir $newFastTreeWrapper
+parse_FastTree $fasttree_dir $mauve_dir $ortholog_count_min $bootstrap_min $is_mauve
 
-findBestReciprocalBlast $full_length_dir $findBestReciprocalBlast
+findBestReciprocalBlast $full_length_dir $is_mauve
 
-getCandidateGC $full_length_dir $getCandidateGC $gc_count_min $ortholog_count_min
+getCandidateGC $full_length_dir $gc_count_min $ortholog_count_min $bootstrap_min $is_mauve
 
 
 ##############################################################

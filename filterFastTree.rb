@@ -52,7 +52,8 @@ in_fh = File.open(infile, 'r')
 in_fh.each_line do |line|
   line.chomp!
   line_arr = line.split("\t")
-  file, gene1, gene2, bootstrap = line_arr
+  file, gene1, gene2 = line_arr
+  bootstrap = line_arr[-1]
   bootstrap = bootstrap.to_f
   orgn = gene1.split('|')[0]
   file_orgn_info[file][orgn][[gene1, gene2]] = bootstrap
