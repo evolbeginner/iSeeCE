@@ -20,7 +20,11 @@ This product also employs several other computational tools. Please ensure that 
 Please type **bash check_requirements.sh** to see whether required software and libraries have been installed.
 
 # Usage
-Please type **iSeeGC.sh -h** to the full usage.
+Please type
+```bash
+bash iSeeGC.sh -h
+```
+to the full usage.
 
 # Caveats
 ![alt text](https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/220px-Google_2015_logo.svg.png)
