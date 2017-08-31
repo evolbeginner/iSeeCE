@@ -17,14 +17,16 @@ This product also employs several other computational tools. Please ensure that 
 * [Mauve](http://darlinglab.org/mauve/mauve.html) (optional)
 
 
-Please type **bash check_requirements.sh** to see whether required software and libraries have been installed.
+To see whether required software and libraries have been installed, please type 
+```bash
+bash check_requirements.sh
+```
 
 # Usage
-Please type
+To the full usage, please type 
 ```bash
 bash iSeeGC.sh -h
 ```
-to the full usage.
 
 # Caveats
 ![alt text](https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/220px-Google_2015_logo.svg.png)
