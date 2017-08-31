@@ -139,8 +139,8 @@ def read_summary_file(summary_file)
     pair_infos = line_arr[5,line_arr.size-5]
     pair_infos.each do |i|
       genes = i.split(':')[0].split(',').map{|i|i.split('|')[1]}
-      bootstrap = i.split(':')[1].to_i
-      pair_info[locus][genes] = ''
+      bootstrap = i.split(':')[1].to_f
+      pair_info[locus][genes] = bootstrap
     end
   end
   in_fh.close
@@ -167,10 +167,8 @@ def output_results(outfile, results)
     if index % 2 == 0
       if index+1 <= results.size-1
         arr2 = results[index+1]
-        #if [arr1, arr2].select{|arr|arr[2] != false and arr[2]>=2}.size == 2
         locus = arr1[0]
-        out_fh.puts [locus, arr1[1,2], arr2[1,2]].flatten.join("\t")
-        #end
+        out_fh.puts [locus, arr1[1,2], arr2[1,2], arr1[3]].flatten.join("\t")
       end
     else
       next
@@ -235,9 +233,9 @@ if not target.nil?
   results << [locus, target, analyze_flanking_orthologs(target, locus, n, best_reciprocal_info, num_positional_orthologs_min, num_flanking_genes_with_positional_orthologs_min)]
 elsif not pair_info.empty?
   pair_info.each_pair do |locus, gene_sh|
-    gene_sh.each_key do |genes|
+    gene_sh.each_pair do |genes, bootstrap|
       genes.each do |gene|
-        results << [locus, gene, analyze_flanking_orthologs(gene, locus, n, best_reciprocal_info, num_positional_orthologs_min, num_flanking_genes_with_positional_orthologs_min)]
+        results << [locus, gene, analyze_flanking_orthologs(gene, locus, n, best_reciprocal_info, num_positional_orthologs_min, num_flanking_genes_with_positional_orthologs_min), bootstrap]
       end
     end
   end
