@@ -149,9 +149,8 @@ function parse_FastTree(){
 
 	local count=0
 
-	echo "Parsing FastTree result ......"
+	echo "Parsing FastTree result with Mauve ......"
 	if [ $is_mauve == true ]; then
-		####
 		[ -f $fasttree_dir/trees.mauve.FastTree_result ] && rm $fasttree_dir/trees.mauve.FastTree_result
 		local total=`ls -1 $fasttree_dir/trees/* | wc -l`
 		for i in $fasttree_dir/trees/*; do
@@ -160,8 +159,10 @@ function parse_FastTree(){
 			$ruby $putativeGC_from_seqSimilarity --tree $i --mauve $mauve_dir/mauve.ortho -b 0 >> $fasttree_dir/trees.mauve.FastTree_result 2>/dev/null
 		done
 		$ruby $convertMauveResultToRawResult -i $fasttree_dir/trees.mauve.FastTree_result --ortho_count_min $ortholog_count_min > $fasttree_dir/GC.mauve.raw_result
+		echo
 	fi
 
+	echo "Parsing FastTree result ......"
 	bash $newFastTreeWrapper --n1 1 --n2 6 --min 3 -b 0.9 -o $fasttree_dir/trees.FastTree_result --indir $fasttree_dir/trees --o2 $fasttree_dir/trees.summary
 }
 
@@ -193,12 +194,13 @@ function getCandidateGC(){
 	local bootstrap_min=$4
 	local is_mauve=$5
 
-	echo "Generating final output ......"
 	cd $full_length_dir >/dev/null
+	echo "Generating final output ......"
 
 	if [ $is_mauve == true ]; then
 		$ruby $getCandidateGC -i ../FastTree/GC.mauve.raw_result --gc_count_min $gc_count_min --ortho_count_min $ortholog_count_min -b $bootstrap_min > ../FastTree/GC.mauve.result
 	fi
+
 	$ruby $getCandidateGC -i ../FastTree/GC.raw_result --gc_count_min $gc_count_min --ortho_count_min $ortholog_count_min -b $bootstrap_min > ../FastTree/GC.result
 
 	if [ $? == 0 ]; then

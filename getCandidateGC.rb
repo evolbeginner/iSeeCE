@@ -54,6 +54,9 @@ end
 in_fh.close unless infile.nil?
 
 
+##############################################
+puts %w[#id gene1,gene2:bootstrap].join("\t")
+
 gc_info.each_pair do |locus, v|
   if v.size >= gc_count_min
     puts [locus, v.keys.map{|i|i.join(',') + ':' + v[i].to_s}].join("\t")
