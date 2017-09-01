@@ -2,6 +2,11 @@
 
 iSeeGC is a bioinformatic pipeline that allows identifying recurrent gene conversion across lineages. It is written by [Sishuo Wang](http://www.researcherid.com/rid/F-8081-2015) (sishuowang{at}hotmail.com) from University of British Columbia.
 
+# Flowchart of iSeeGC
+<div style="display:table-cell; vertical-align:middle; text-align:center">
+<img src=images/Flowchart.png width=800 height=500></img>
+</div>
+
 # Installation
 iSeeGC is run in Linux environment.
 
@@ -16,16 +21,10 @@ This product also employs several other computational tools. Please ensure that 
 * [RAxML](https://sco.h-its.org/exelixis/software.html) (optional)
 * [Mauve](http://darlinglab.org/mauve/mauve.html) (optional)
 
-
 To see whether required software and libraries have been installed, please type 
 ```bash
 bash check_requirements.sh
 ```
-
-# Flowchart of iSeeGC
-<div style="display:table-cell; vertical-align:middle; text-align:center">
-<img src=images/Flowchart.png width=800 height=500></img>
-</div>
 
 # Usage
 iSeeGC will identify recurrent gene conversion (GC) across species based on gene phylogeny and synteny. In brief, paralogs from the same species that form monophyly and have syntenic (positional) orthologs across species will be identified as converted genes.
