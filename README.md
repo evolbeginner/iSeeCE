@@ -25,11 +25,17 @@ bash check_requirements.sh
 # Usage
 iSeeGC will identify recurrent gene conversion (GC) across species based on gene phylogeny and synteny. In brief, paralogs from the same species that form monophyly and have syntenic (positional) orthologs across species will be identified as converted genes.
 
-The input files should be in the format of * [Genbank](https://www.ncbi.nlm.nih.gov/genbank/).
+The input files should be in the format of [Genbank](https://www.ncbi.nlm.nih.gov/genbank/).
 
 To the full usage, please type 
 ```bash
 bash iSeeGC.sh -h
+```
+
+As follows are some examples:
+```bash
+bash iseeGC.sh --indir genebank_dir --outdir new_dir
+bash iseeGC.sh --indir genebank_dir --outdir new_dir --gc_count_min 8 --bootstrap 0.9
 ```
 
 # Notes
