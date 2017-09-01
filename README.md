@@ -23,18 +23,19 @@ bash check_requirements.sh
 ```
 
 # Usage
+iSeeGC will identify recurrent gene conversion (GC) across species based on gene phylogeny and synteny. In brief, paralogs from the same species that form monophyly and have syntenic (positional) orthologs across species will be identified as converted genes.
+
+The input files should be in the format of * [Genbank](https://www.ncbi.nlm.nih.gov/genbank/).
+
 To the full usage, please type 
 ```bash
 bash iSeeGC.sh -h
 ```
 
-iSeeGC will identify recurrent gene conversion (GC) across species based on gene phylogeny and synteny. In brief, paralogs from the same species that form monophyly and have syntenic (positional) orthologs across species will be identified as converted genes.
-
+# Notes
 By default, syntenic orthologs will be identified by using only best reciprocal BLAST hits. The results of converted genes will be output to the file **FastTree/GC.result**.
 
 When "--is_mauve" is specified, syntenic orthologs will additionally be identified by Mauve whose results will be output to the file **FastTree/GC.mauve.result**. Also, it is necessary to specify the path to Mauve.jar and progressiveMauve using --mauve_jar and --mauve, respectively. So please make sure that Mauve.jar has been installed if you want to perform the analysis with Mauve. Note that '--is_mauve' is optional. When '--is_mauve' is **NOT** specified, the analysis will be performed based on the best reciprocal BLAST hits.
-
-The input files should be in the format of * [Genbank](https://www.ncbi.nlm.nih.gov/genbank/).
 
 # Caveats
 ![alt text](https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/220px-Google_2015_logo.svg.png)
