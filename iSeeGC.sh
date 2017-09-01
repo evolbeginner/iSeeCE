@@ -220,17 +220,19 @@ function usage(){
 	fi
 	echo "====================================="
 
-	echo "iSeeGC: a tool to identify recurrent gene conversion (GC) based on gene syntenyc and phylogeny"
-	echo -e "\twritten by Sishuo Wang from University of British Columbia, Canada"
-	echo
-	echo -e "${BOLD}USAGE$NC"
-	echo -e "Required arguments:"
-	echo -e "--indir\t\t\t\t\tThe directory containing input files in the format of Genbank"
+	word_limit_per_line "iSeeGC: a tool to identify recurrent gene conversion (GC) based on gene syntenyc and phylogeny written by Sishuo Wang from University of British Columbia, Canada" 78
 	echo
 
-	echo -e "--outdir\t\t\t\tThe output directory (cannot be the current directory)"
+	echo -e "${BOLD}USAGE$NC"
+	echo -e "Required arguments:"
+	echo -ne "--indir\t\t\t\t\t"
+	word_limit_per_line "The directory containing input files in the format of Genbank" 38 40
 	echo
-	#echo -e "--transcript|--transcript_gtftranscript gtf file"
+
+	echo -ne "--outdir\t\t\t\t"
+	word_limit_per_line "The output directory (cannot be the current directory)" 38 40
+	echo
+
 	echo "Optional arguments:"
 
 	echo -ne "--gc_count_min|--GC_count_min\t\t"
