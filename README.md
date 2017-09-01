@@ -47,7 +47,7 @@ When "--is_mauve" is specified, syntenic orthologs will additionally be identifi
 
 # Caveats
 <div style="display:table-cell; vertical-align:middle; text-align:center">
-	<img class="Centered" src=images/Flowchart.png width=800 height=500 align="center"></img>
+<img src=images/Flowchart.png width=800 height=500></img>
 </div>
 
 # Copyright and Licence:
