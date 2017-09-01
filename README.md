@@ -35,7 +35,7 @@ bash iSeeGC.sh -h
 As follows are some examples:
 ```bash
 bash iseeGC.sh --indir genebank_dir --outdir new_dir
-bash iseeGC.sh --indir genebank_dir --outdir new_dir --gc_count_min 8 --bootstrap 0.9
+bash iseeGC.sh --indir genebank_dir --outdir new_dir --gc_count_min 8 --bootstrap 0.9 # bootstrap >= 0.9
 ```
 
 # Notes
