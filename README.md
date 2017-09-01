@@ -46,8 +46,7 @@ By default, syntenic orthologs will be identified by using only best reciprocal 
 When "--is_mauve" is specified, syntenic orthologs will additionally be identified by Mauve whose results will be output to the file **FastTree/GC.mauve.result**. Also, it is necessary to specify the path to Mauve.jar and progressiveMauve using --mauve_jar and --mauve, respectively. So please make sure that Mauve.jar has been installed if you want to perform the analysis with Mauve. Note that '--is_mauve' is optional. When '--is_mauve' is **NOT** specified, the analysis will be performed based on the best reciprocal BLAST hits.
 
 # Caveats
-<div id="over">
-	<span class="Centered"></span>
+<div style="display:table-cell; vertical-align:middle; text-align:center">
 	<img class="Centered" src=images/Flowchart.png width=800 height=500 align="center"></img>
 </div>
 
