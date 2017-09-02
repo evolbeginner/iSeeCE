@@ -31,7 +31,7 @@ iSeeGC will identify recurrent gene conversion (GC) across species based on gene
 
 The input files should be genomes in the format of [Genbank](https://www.ncbi.nlm.nih.gov/genbank/). Please make sure that the nucleotide sequences of the genome are included in each Genbank-formatted input file.
 
-To the full usage, please type 
+For the full usage, please type 
 ```bash
 bash iSeeGC.sh -h
 ```
