@@ -1,14 +1,14 @@
-# iSeeGC
+# iSeeCE
 
-iSeeGC is a bioinformatic pipeline that allows identifying recurrent gene conversion across lineages. It is written by [Sishuo Wang](http://www.researcherid.com/rid/F-8081-2015) (sishuowang{at}hotmail.com) from University of British Columbia.
+iSeeCE is a bioinformatic pipeline that allows identifying recurrent gene conversion across lineages.
 
-# Flowchart of iSeeGC
+# Flowchart of iSeeCE
 <div style="display:table-cell; vertical-align:middle; text-align:center">
 <img src=images/Flowchart.png width=800 height=500></img>
 </div>
 
 # Installation
-iSeeGC is run in Linux environment.
+iSeeCE is run in Linux environment.
 
 Many scripts included in this product require packages from
 * [BioRuby](http://bioruby.org)
@@ -27,21 +27,21 @@ bash check_requirements.sh
 ```
 
 # Usage
-iSeeGC will identify recurrent gene conversion (GC) across species based on gene phylogeny and synteny. In brief, paralogs from the same species that form monophyly and have syntenic (positional) orthologs across species will be identified as converted genes.
+iSeeCE will identify recurrent concerted evolution (CE) or gene conversion (GC) across species based on gene phylogeny and synteny. In brief, paralogs from the same species that form monophyly and have syntenic (positional) orthologs across species will be identified as converted genes.
 
 The input files should be genomes in the format of [Genbank](https://www.ncbi.nlm.nih.gov/genbank/). Please make sure that the nucleotide sequences of the genome are included in each Genbank-formatted input file.
 
 For the full usage, please type 
 ```bash
-bash iSeeGC.sh -h
+bash iSeeCE.sh -h
 ```
 
 As follows are some examples:
 ```bash
 #
-bash iseeGC.sh --indir genebank_dir --outdir new_dir
+bash iseeCE.sh --indir genebank_dir --outdir new_dir
 # No. of converted genes >= 8, each conversion event supported by bootstrap >= 0.9
-bash iseeGC.sh --indir genebank_dir --outdir new_dir --gc_count_min 8 --bootstrap 0.9
+bash iseeCE.sh --indir genebank_dir --outdir new_dir --gc_count_min 8 --bootstrap 0.9
 ```
 
 # Notes
@@ -52,7 +52,7 @@ When "--is_mauve" is specified, syntenic orthologs will additionally be identifi
 # Copyright and Licence:
 Please see [CC0](https://creativecommons.org/share-your-work/public-domain/cc0/) for licensing information.
 
-You are welcome to cite our paper coming soon for iSeeGC if you feel it is useful.
+You are welcome to cite our paper coming soon for iSeeCE if you feel it is useful.
 
 You may need to cite corresponding papers for the use of OrthoMCL, MAFFT, FastTree, RAxML, Mauve, BioRuby and BioPerl.
 

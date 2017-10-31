@@ -26,6 +26,13 @@ source $check_which
 
 
 ########################################################
+echo -e "${BOLD}Checking bc ......${NC}"
+if which bc 2>/dev/null 1>&2; then
+	echo "bc needs to be installed. Please find the information at https://www.thelinuxfaq.com/159-bc-command-not-found-in-centos-rhel-fedora-ubuntu."
+fi
+echo ''
+
+
 echo -e "${BOLD}Checking Ruby and Perl ......${NC}"
 software=(ruby perl)
 check_which ${software[@]}
@@ -46,7 +53,7 @@ echo ''
 
 
 echo -e "${BOLD}Checking Perl libs ......${NC}"
-bash $check_perl_lib --lib 'Getopt::Long,Carp,List::Util,Bio::SeqIO,Bio::Perl,Bio::Tools::CodonTable' --lib_dir $lib_dir
+bash $check_perl_lib --lib 'Getopt::Long,Carp,List::Util,Bio::SeqIO,Bio::Perl,Bio::Tools::CodonTable,autovivification' --lib_dir $lib_dir
 echo ''
 
 

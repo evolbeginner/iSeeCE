@@ -96,7 +96,7 @@ for i in $indir/*FastTree.tre; do
 		count=`expr $count + 1`
 		processbar $count $total
 	fi
-	ruby2.1 $putativeGC_from_seqSimilarity --tree $i -b 0 --otu_minmax $otu_min,$otu_max >> $new_FastTree_result
+	ruby $putativeGC_from_seqSimilarity --tree $i -b 0 --otu_minmax $otu_min,$otu_max >> $new_FastTree_result
 done
 echo ''
 
