@@ -1,5 +1,8 @@
 #! /bin/env python
 
+# A script identify tandemly duplicated genes
+
+########################################################################
 import sys
 import re
 import os
