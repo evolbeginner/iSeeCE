@@ -149,8 +149,8 @@ function parse_FastTree(){
 
 	local count=0
 
-	echo "Parsing FastTree result with Mauve ......"
 	if [ $is_mauve == true ]; then
+		echo "Parsing FastTree result with Mauve ......"
 		[ -f $fasttree_dir/trees.mauve.FastTree_result ] && rm $fasttree_dir/trees.mauve.FastTree_result
 		local total=`ls -1 $fasttree_dir/trees/* | wc -l`
 		for i in $fasttree_dir/trees/*; do
@@ -188,11 +188,12 @@ function findBestReciprocalBlast(){
 
 
 function getCandidateGC(){
-	local full_length_dir=$1
-	local gc_count_min=$2
-	local ortholog_count_min=$3
-	local bootstrap_min=$4
-	local is_mauve=$5
+	local integrateTD2GC=$1
+	local full_length_dir=$2
+	local gc_count_min=$3
+	local ortholog_count_min=$4
+	local bootstrap_min=$5
+	local is_mauve=$6
 
 	cd $full_length_dir >/dev/null
 	echo "Generating final output ......"
@@ -203,12 +204,29 @@ function getCandidateGC(){
 
 	$ruby $getCandidateGC -i ../FastTree/GC.raw_result --gc_count_min $gc_count_min --ortho_count_min $ortholog_count_min -b $bootstrap_min > ../FastTree/GC.result
 
+	ruby $integrateTD2GC --td ../TD/TD.list -i ../FastTree/GC.result 
+
 	if [ $? == 0 ]; then
 		for i in `seq 10`; do processbar $i 10; sleep 0.1; done;
 		echo -e "\nDone!";
 	fi
 
 	cd - >/dev/null
+}
+
+
+function generate_TD(){
+	local orthomcl_dir=$1;
+	local outdir=$2;
+	local get_TD=$3;
+	local TD_dir=$4;
+	echo "Identitying tandem duplicates ......"
+	for i in $outdir/sequences/*gff; do
+		gff_arg="$gff_arg -g $i"
+	done
+	python $get_TD $gff_arg -i $orthomcl_dir/all_VS_all.out.tab --type gff3 --gene_regexp ".+\|(.+)" --attr ID -n 5 -d 20000 > $TD_dir/TD.list
+	for i in `seq 10`; do processbar $i 10; sleep 0.1; done;
+	echo
 }
 
 
@@ -285,7 +303,7 @@ function usage(){
 function determine_YN(){
 	local outdir=$1
 
-	echo -e "Do you want to ignore this issue (the outdir $outdir will not be overwritten but new files will still be output in $outdir)? ${BOLD}[Y/N]${NC}"
+	echo -e "Do you want to ignore this issue (the outdir $outdir will not be overwritten but new files will still be output to $outdir)? ${BOLD}[Y/N]${NC}"
 	read -r -n1 char
 	echo ''
 	case $char in
@@ -397,7 +415,7 @@ if [ -d $outdir ]; then
 			rm -rf $outdir
 		else
 			echo "The outdir $outdir has already existed."
-			#determine_YN $outdir
+			determine_YN $outdir
 			#usage
 		fi
 	fi
@@ -422,15 +440,19 @@ putativeGC_from_seqSimilarity=$CWD/putativeGC_from_seqSimilarity.rb
 filterFastTree=$CWD/filterFastTree.rb
 findBestReciprocalBlast=$CWD/bestHit.rb
 getCandidateGC=$CWD/getCandidateGC.rb
+get_TD=$CWD/scripts/get_TD.py
+integrateTD2GC=$CWD/scripts/integrateTD2GC.rb
 
 
 ##############################################################
+TD_dir=$outdir/TD
 aln_dir=$outdir/aln
 mauve_dir=$outdir/mauve
 orthomcl_dir=$outdir/OrthoMCL
 fasttree_dir=$outdir/FastTree
 full_length_dir=$outdir/full_length
 
+mkdir -p $TD_dir
 mkdir -p $aln_dir
 mkdir -p $mauve_dir
 mkdir -p $orthomcl_dir
@@ -451,11 +473,13 @@ parse_genbank_files $indir $genbank2cds
 
 #run_FastTree $aln_dir
 
+generate_TD $orthomcl_dir $outdir $get_TD $TD_dir
+
 parse_FastTree $fasttree_dir $mauve_dir $ortholog_count_min $bootstrap_min $is_mauve
 
 findBestReciprocalBlast $full_length_dir $is_mauve
 
-getCandidateGC $full_length_dir $gc_count_min $ortholog_count_min $bootstrap_min $is_mauve
+getCandidateGC $integrateTD2GC $full_length_dir $gc_count_min $ortholog_count_min $bootstrap_min $is_mauve
 
 
 ##############################################################
