@@ -51,6 +51,8 @@ Sometimes, concerted evolution or gene conversion can be difficult to be disting
 
 When "--is_mauve" is specified, syntenic orthologs will additionally be identified by Mauve whose results will be output to the file **FastTree/GC.mauve.result**. Also, it is necessary to specify the path to Mauve.jar and progressiveMauve using --mauve_jar and --mauve, respectively. So please make sure that Mauve.jar has been installed if you want to perform the analysis with Mauve. Note that '--is_mauve' is optional. When '--is_mauve' is **NOT** specified, the analysis will be performed based on the best reciprocal BLAST hits.
 
+When '--bootstrap' is specified, only paralogs with support value equal to or above the given value will be analyzed. However, it should be noted that here 'bootstrap' refers to the support value obtained by Shimodaira-Hasegawa test implemented with FastTree, rather than regular bootstrap value. For more details, please visit http://www.microbesonline.org/fasttree/.
+
 # Copyright and Licence:
 Please see [CC0](https://creativecommons.org/share-your-work/public-domain/cc0/) for licensing information.
 
