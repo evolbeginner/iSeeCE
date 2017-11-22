@@ -3,6 +3,7 @@
 ##############################################################
 # A wrapper of scripts to identify recurrent gene conversion using phylogenomic methods
 # Please type "bash iSeeCE.sh" for help message.
+# Last updated: 2017/11/21
 
 
 ##############################################################
