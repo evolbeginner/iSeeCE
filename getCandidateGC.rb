@@ -55,7 +55,7 @@ in_fh.close unless infile.nil?
 
 
 ##############################################
-puts %w[#id gene1,gene2:bootstrap].join("\t")
+puts ['#id', 'gene1,gene2:bootstrap', '("*" denotes to potential tandem duplicates)'].join("\t")
 
 gc_info.each_pair do |locus, v|
   if v.size >= gc_count_min
