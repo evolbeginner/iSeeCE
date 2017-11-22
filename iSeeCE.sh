@@ -467,11 +467,11 @@ parse_genbank_files $indir $genbank2cds
 
 [ $is_mauve == true ] && run_mauve $mauve_dir $Mauve $Mauve_jar
 
-#run_orthomcl $indir $orthomcl_dir $blast_cpu
+run_orthomcl $indir $orthomcl_dir $blast_cpu
 
-#run_mafft $outdir $aln_dir $selectOrthoFromMauveOrthomcl $check_aln_group $mafft_cpu
+run_mafft $outdir $aln_dir $selectOrthoFromMauveOrthomcl $check_aln_group $mafft_cpu
 
-#run_FastTree $aln_dir
+run_FastTree $aln_dir
 
 generate_TD $orthomcl_dir $outdir $get_TD $TD_dir
 
