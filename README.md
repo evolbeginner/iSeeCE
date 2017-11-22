@@ -47,6 +47,8 @@ bash iseeCE.sh --indir genebank_dir --outdir new_dir --gc_count_min 8 --bootstra
 # Notes
 By default, syntenic orthologs will be identified by using only best reciprocal BLAST hits. The results of converted genes will be output to the file **FastTree/GC.result**.
 
+Sometimes, concerted evolution or gene conversion can be difficult to be distinguished from tandem duplication. Thus, tandem duplicates will be identified and output to **TD/TD.list**. Clusters of tandem duplicates are defined as paralogs separated by no more than five genes and located within 20kb on the chromosome. Tandem duplicates are those from the same tandem duplicate clusters. All tandem duplicates are labeled with a star in the output **FastTree/GC.result**.
+
 When "--is_mauve" is specified, syntenic orthologs will additionally be identified by Mauve whose results will be output to the file **FastTree/GC.mauve.result**. Also, it is necessary to specify the path to Mauve.jar and progressiveMauve using --mauve_jar and --mauve, respectively. So please make sure that Mauve.jar has been installed if you want to perform the analysis with Mauve. Note that '--is_mauve' is optional. When '--is_mauve' is **NOT** specified, the analysis will be performed based on the best reciprocal BLAST hits.
 
 # Copyright and Licence:
