@@ -275,6 +275,11 @@ function usage(){
 	echo -e "\t\t\t\t\tdefault: 2"
 	echo
 
+	echo -ne "-b|--bootstrap\t\t\t\t"
+	 word_limit_per_line "The minimum support value in FastTree for a node to be considered as converted genes. It should range from 0 to 1. Note that it is different from the traditional bootstrap value. For more details, please visit http://www.microbesonline.org/fasttree/" 38 40
+	echo -e "\t\t\t\t\tdefault: 0"
+	echo
+
 	echo -ne "--is_mauve|--is_Mauve\t\t\t"
 	word_limit_per_line "Identification of syntenic orthologs will be performed with Mauve." 38 40
 	echo -e "\t\t\t\t\tdefault: disabled"
