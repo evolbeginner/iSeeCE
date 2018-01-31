@@ -54,7 +54,7 @@ When "--is_mauve" is specified, syntenic orthologs will additionally be identifi
 When '--bootstrap' is specified, only paralogs with support value equal to or above the given value will be analyzed. However, it should be noted that here 'bootstrap' refers to the support value obtained by Shimodaira-Hasegawa test implemented with FastTree, rather than regular bootstrap value. For more details, please visit http://www.microbesonline.org/fasttree/.
 
 # Copyright and Licence:
-Please see [CC0](https://creativecommons.org/share-your-work/public-domain/cc0/) for licensing information.
+Please see [CC4](https://creativecommons.org/licenses/by/4.0/) for licensing information.
 
 You are welcome to cite our paper coming soon for iSeeCE if you feel it is useful.
 
