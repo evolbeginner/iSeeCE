@@ -300,7 +300,7 @@ function usage(){
 	echo
 
 	echo -e "Feel free to use, edit and deliver the codes for any use."
-	echo -e "Please write to lrcedb@hotmail.com for bug report or any question. Your help is highly appreciated!"
+	echo -e "Please write to sishuowang@hotmail.ca for bug report or any question. Your help is highly appreciated!"
 	echo
 	exit 1
 }
