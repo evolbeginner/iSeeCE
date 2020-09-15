@@ -37,7 +37,7 @@ ortholog_count_min=2
 is_force=false
 blast_cpu=2
 mafft_cpu=2
-bootstrap=0
+bootstrap_min=0
 is_mauve=false
 
 
