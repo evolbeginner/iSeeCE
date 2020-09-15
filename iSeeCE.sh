@@ -11,6 +11,7 @@ CWD=`dirname $0`
 cd $CWD >/dev/null
 CWD=`pwd`
 cd - >/dev/null
+export RUBYLIB=$RUBYLIB:$CWD
 
 source "$CWD/scripts/processbar.sh"
 source "$CWD/word_limit_per_line.sh"
