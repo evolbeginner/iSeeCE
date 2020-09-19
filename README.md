@@ -71,9 +71,12 @@ When '--bootstrap' is specified, only paralogs with support value equal to or ab
 # Copyright and Licence:
 Please see [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) for licensing information.
 
-You are welcome to cite our paper coming soon for iSeeCE if you feel it is useful.
+You are welcome to cite our paper (see below) for iSeeCE if you feel it is useful.
 
 You may need to cite corresponding papers for the use of OrthoMCL, diamond, MAFFT, FastTree, RAxML, Mauve, BioRuby and BioPerl.
+
+# Publication
+Wang, Sishuo, and Youhua Chen. "Phylogenomic analysis demonstrates a pattern of rare and long-lasting concerted evolution in prokaryotes." Communications biology 1.1 (2018): 1-11.
 
 # Acknowledgements
 We thank Michael Imelfort and Kranti Konganti for sharing the free script gff2fasta.pl for sequence processing.
