@@ -28,13 +28,15 @@ This product also employs several other computational tools. Please ensure that 
 * [RAxML](https://sco.h-its.org/exelixis/software.html) (optional)
 * [Mauve](http://darlinglab.org/mauve/mauve.html) (optional)
 
+Important: Please be aware that it is important to **change "dbLogin" and "dbPassword" in the configuration file of OrthoMCL. An example file is provided with iSeeCE (orthomcl.config))**.
+
 To see whether required software and libraries have been installed, please type 
 ```bash
 bash check_requirements.sh
 ```
 
 # Usage
-iSeeCE identifies recurrent concerted evolution (CE) or gene conversion (GC) across species based on gene phylogeny and synteny. In brief, paralogs from the same species that form monophyly and have syntenic (positional) orthologs across species will be identified as converted genes.
+iSeeCE identifies recurrent concerted evolution (CE) or gene conversion (GC) across species based on gene phylogeny and synteny. In brief, paralogs from the same species that form monophyly and have syntenic (positional) orthologs across species will be identified as converted genes. For visualiztion of some examples, please see our paper at the end or visit our database at www.lrgcdb.eu.
 
 The input files should be genomes in the format of [Genbank](https://www.ncbi.nlm.nih.gov/genbank/). Please make sure that the nucleotide sequences of the genome are included in each Genbank-formatted input file.
 
@@ -58,8 +60,6 @@ bash iseeCE.sh --indir genebank_dir --outdir new_dir --orthomcl_config orthomcl_
 ```
 
 # Notes
-**"--orthomcl_config"** specifies the configuration file of OrthoMCL. See an example provided alongside iSeeCE (**orthomcl.config**). Please be aware that it is important to **change "dbLogin" and "dbPassword" in that file**.
-
 By default, syntenic orthologs will be identified by using only best reciprocal BLAST hits. The results of converted genes will be output to the file **FastTree/GC.result**.
 
 Sometimes, concerted evolution or gene conversion can be difficult to be distinguished from tandem duplication. Thus, tandem duplicates will be identified and output to **TD/TD.list**. Clusters of tandem duplicates are defined as paralogs separated by no more than five genes and located within 20kb on the chromosome. Tandem duplicates are those from the same tandem duplicate clusters. All tandem duplicates are labeled with a star in the output **FastTree/GC.result**.
