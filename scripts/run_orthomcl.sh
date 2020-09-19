@@ -9,15 +9,17 @@
 
 ##########################################################################
 # fill in the path of the following two files here
-orthomcl_config_file=/home/sswang/software/sequence_analysis/orthomclSoftware-v2.0.4/test1/orthomcl.config
-install_schema_log_file=/home/sswang/software/sequence_analysis/orthomclSoftware-v2.0.4/test1/install_schema.log
+#orthomcl_config_file=/home/sswang/software/sequence_analysis/orthomclSoftware-v2.0.4/test1/orthomcl.config
+#install_schema_log_file=/home/sswang/software/sequence_analysis/orthomclSoftware-v2.0.4/test1/install_schema.log
+install_schema_log_file=install_schema.log
 blast_prog="blastp"
-blastp=~/bin/blastp
+blastp=blastp
+#user_argu="-uroot"
+user_argu=''
 
 
 ##########################################################################
 read_para(){
-
 [ -z "$1" ] && show_help
 while [ $# -gt 0 ]
 do
@@ -50,8 +52,20 @@ do
 		abbr=(${abbr[@]} $abbr_tmp)
 		shift
 		;;
+	--orthomcl_config)
+		orthomcl_config_file=$2
+		shift
+		;;
 	-s|--s|--silent)
 		silent='true'
+		;;
+	-u)
+		user_argu='-u'$2
+		shift
+		;;
+	-p)
+		passwd_argu="-p$2"
+		shift
 		;;
 	-h|--h|--help)
 		show_help
@@ -69,10 +83,19 @@ echo
 [ -z $blast_evalue ] && blast_evalue=1e-10
 if [ -z $blast ]; then
 	if ! ls all_VS_all.out.tab 1>/dev/null 2>/dev/null; then
-		echo -e "all_VS_all.out.tab cannot not found!\nExiting ......"
+		echo -e "all_VS_all.out.tab cannot not found!\nExiting ......" >&2
 		exit -1
 	fi
 fi
+}
+
+
+function read_orthomcl_config(){
+#dbLogin=sswang
+#dbPassword=123456
+	local config_file=$1
+	user_argu="-u"`grep '^dbLogin' $config_file | cut -f 2 -d =`
+	passwd_argu="-p"`grep '^dbPassword' $config_file | cut -f 2 -d =`
 }
 
 
@@ -87,7 +110,7 @@ AdjustFasta(){
 }
 
 
-blast(){
+do_blast(){
 [ -e compliantFasta ] && rm -rf compliantFasta
 mkdir compliantFasta
 for i in ${abbr[@]}; do
@@ -99,18 +122,20 @@ echo $*
 local blast;
 blast=$1;
 blast_programme=$2;
+echo -ne "BLASTing\t";
 if [ "$blast" == 'true' ]; then
 	type="prot"
 	echo "makeblastdb"
 	cd compliantFasta
 	local input_basename=`basename all.fasta`
 	[ $blast_programme == "blastn" ] && type="nucl"
-	makeblastdb -in $input_basename -dbtype $type -out $input_basename
-	#formatdb -i $input_basename -p $type;
-	echo -ne "BLASTing\t";
-	blast_command="$blastp -query all.fasta -db $input_basename -out all_VS_all.out.tab -outfmt 6 -evalue 1e-3 -num_threads $blast_CPU"
-	#blast_command="blastall -p $blast_programme -i all.fasta -d $input_basename -e $blast_evalue -o all_VS_all.out.tab -a $blast_CPU -m8";
-	#blast_command="blastall -p $blast_programme -i all.fasta -d $input_basename -e $blast_evalue -o all_VS_all.out.tab -a $blast_CPU -m8";
+	if [ $blast_programme == "diamond" ]; then
+		diamond  makedb --in $input_basename -d $input_basename -p 2
+		blast_command="diamond blastp -q all.fasta -o all_VS_all.out.tab -d $input_basename -p $blast_CPU -e 1e-3"
+	else
+		makeblastdb -in $input_basename -dbtype $type -out $input_basename
+		blast_command="$blastp -query all.fasta -db $input_basename -out all_VS_all.out.tab -outfmt 6 -evalue 1e-3 -num_threads $blast_CPU"
+	fi
 	echo $blast_command;
 	$blast_command;
 	mv all_VS_all.out.tab ../
@@ -156,10 +181,10 @@ clear_files(){
 
 
 show_help(){
-	echo "`basename $0` <--i|--input infile,abbr>:
+	echo "`basename $0` <--orthomcl_config orthomcl_config> <--i|--input infile,abbr>:
 		abbr refers to the abbreviation of the name representing the infile.
 		abbr should be seperated from the name of input file by a comma.
-		If abbr is not specified, its value will be the same as the input file."
+		If abbr is not specified, its value will be the same as the input file." >&2
 	echo "Options:
 		[--b|--blast]:           to do blast or not
 			                 default off
@@ -167,7 +192,7 @@ show_help(){
 		                         default 2
 		[--blast_evalue evalue]: default 1e-10
 		[--s|--silent]
-		[--h|--help]"
+		[--h|--help]" >&2
         exit 1
 }
 
@@ -176,14 +201,16 @@ show_help(){
 ###################################################################################
 read_para $*;
 
-mysql -uroot -e 'drop database orthomcl; create database orthomcl;';
+read_orthomcl_config $orthomcl_config_file
+
+mysql $user_argu $passwd_argu -e 'drop database orthomcl; create database orthomcl;';
 
 ###	-------------------------------------------------------------------	###
 orthomclInstallSchema $orthomcl_config_file $install_schema_log_file;
 
 AdjustFasta ${input[@]}
 
-blast $blast $blast_prog;
+do_blast $blast $blast_prog;
 
 prepare_compliant
 
@@ -191,5 +218,6 @@ orthomcl_2
 
 clear_files
 
-mysql -uroot -e 'drop database orthomcl; create database orthomcl;';
+mysql $user_argu $passwd_argu -e 'drop database orthomcl; create database orthomcl;';
+
 
