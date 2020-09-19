@@ -3,6 +3,7 @@
 
 require "getoptlong"
 require "bio"
+require 'parallel'
 
 require "Dir"
 
@@ -89,12 +90,13 @@ end
 
 
 def output_seq(orthomcl_groups, seq_objs, prefix_rela, outdir, cpu)
-  orthomcl_groups.each_with_index do |orthomcl_group, index|
+  #orthomcl_groups.each_with_index do |orthomcl_group, index|
+  Parallel.map(orthomcl_groups.each_with_index, in_processes: cpu) do |orthomcl_group, index|
     outfile = File.join([outdir, (index+1).to_s+".fas"])
     out_aln = File.join([outdir, (index+1).to_s+".aln"])
     out_fh = File.open(outfile, 'w')
     orthomcl_group.each do |gene|
-      p gene if not prefix_rela.include?(gene)
+      puts gene if not prefix_rela.include?(gene)
       out_fh.puts ">" + prefix_rela[gene] + '|' + gene
       out_fh.puts seq_objs[gene].seq
     end
@@ -178,17 +180,17 @@ end
 
 #######################################################################
 if seq_files.empty?
-  puts "seq_files empty! Exiting ......"
+  STDERR.puts "seq_files empty! Exiting ......"
   exit
 end
 
 if prefixes.empty?
-  puts "prefix not given! Exiting ......"
+  STDERR.puts "prefix not given! Exiting ......"
   exit
 end
 
 if not [group_size_min, group_size_max, mauve_size_min, mauve_size_max].select{|i|i.nil?}.empty?
-  puts "group_size and mauve_size have to be given! Exiting ......"
+  STDERR.puts "group_size and mauve_size have to be given! Exiting ......"
   exit
 end 
 

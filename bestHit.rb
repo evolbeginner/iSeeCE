@@ -163,6 +163,7 @@ end
 
 def output_results(outfile, results)
   out_fh = (outfile.nil? or outfile == '-') ? STDOUT : File.open(outfile, 'w')
+  out_fh.puts %w[locus gene1 no_flanking_orthologs gene2 no_flanking_orthologs bootstrap].join("\t")
   results.each_with_index do |arr1, index|
     if index % 2 == 0
       if index+1 <= results.size-1
