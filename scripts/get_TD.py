@@ -40,7 +40,7 @@ class Gene_from_gff():
 
 def show_help():
     script_basename=os.path.basename(sys.argv[0])
-    print "Usage of " + script_basename
+    print("Usage of " + script_basename)
     sys.exit()
 
 
@@ -126,7 +126,7 @@ def read_gff(gff_files, genes_included, attr, type="gff3"):
 
 def parse_pairsh(pairsh, sep='-'):
     gene_relations = {}
-    for k,v in pairsh.iteritems():
+    for k,v in pairsh.items():
         list = k.split(sep)
         for index,gene in enumerate(list):
             if not gene in gene_relations:
@@ -137,13 +137,13 @@ def parse_pairsh(pairsh, sep='-'):
 
 def get_tandem_relations(seq_objsh, gene_relations, distance, genes_by_chr, number_of_spacers):
     tandem_relations = {}
-    for gene, paired_genesh in seq_objsh.iteritems():
+    for gene, paired_genesh in seq_objsh.items():
         gene_chr = seq_objsh[gene].chr
         gene_start = seq_objsh[gene].start
         if not gene in gene_relations:
             continue
         #for paired_gene in gene_relations[gene].keys():
-        #    print "-".join(sorted([gene,paired_gene]))
+        #    print ("-".join(sorted([gene,paired_gene])))
         for paired_gene in gene_relations[gene].keys():
             if not paired_gene in seq_objsh:
                 continue
@@ -171,8 +171,8 @@ def iteratively_find_genes_in_cluster(gene_hash, genes_in_cluster):
 
 def get_tandem_clusters(tandem_relations):
     tandem_clusters = []
-    for gene, hash in tandem_relations.iteritems():
-        genes_in_cluster = [gene] + tandem_relations[gene].keys()
+    for gene, hash in tandem_relations.items():
+        genes_in_cluster = [gene] + list(tandem_relations[gene].keys())
         iteratively_find_genes_in_cluster(tandem_relations[gene], genes_in_cluster)
         tandem_clusters.append(genes_in_cluster)
     return(tandem_clusters)
@@ -197,7 +197,7 @@ try:
     )
 
 except getopt.GetoptError:
-    print "Illegal params!"
+    print ("Illegal params!")
     show_help()
 for op, value in opts:
     if op == "-p" or op == "--pair" or op == "--pair_file":
@@ -228,7 +228,7 @@ for op, value in opts:
         gene_regexp = value
 
 if not gff_files:
-    print "gff must be given! Exiting ......"
+    print ("gff must be given! Exiting ......")
     sys.exit()
 
 
@@ -246,12 +246,12 @@ gene_relations = parse_pairsh(pairsh, pair_sep)
 
 gene_objsh = read_gff(gff_files, genes_included, attr, gff_type)
 
-for gene, gene_obj in gene_objsh.iteritems():
+for gene, gene_obj in gene_objsh.items():
     if not gene_obj.chr in genes_by_chr:
         genes_by_chr[gene_obj.chr] = []
     genes_by_chr[gene_obj.chr].append(gene)
 
-for chr, genes in genes_by_chr.iteritems():
+for chr, genes in genes_by_chr.items():
     genes.sort(key=lambda i: gene_objsh[i].start)
 
 tandem_relations = get_tandem_relations(gene_objsh, gene_relations, distance, genes_by_chr, number_of_spacers)
@@ -261,7 +261,7 @@ tandem_clusters = get_tandem_clusters(tandem_relations)
 for cluster in tandem_clusters:
     de_duplicate_clustersh["\t".join(sorted(cluster))] = ''
 
-for k,v in de_duplicate_clustersh.iteritems():
-    print k 
+for k,v in de_duplicate_clustersh.items():
+    print (k)
 
 
