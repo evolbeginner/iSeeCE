@@ -27,7 +27,7 @@ source $check_which
 
 ########################################################
 echo -e "${BOLD}Checking bc ......${NC}"
-if which bc 2>/dev/null 1>&2; then
+if ! which bc 2>/dev/null 1>&2; then
 	echo "bc needs to be installed. Please find the information at https://www.thelinuxfaq.com/159-bc-command-not-found-in-centos-rhel-fedora-ubuntu."
 fi
 echo ''
@@ -48,7 +48,7 @@ echo ''
 
 
 echo -e "${BOLD}Checking Ruby libs ......${NC}"
-ruby $check_ruby_lib --lib 'getoptlong,find,bio,Dir' --lib_dir $lib_dir
+ruby $check_ruby_lib --lib 'getoptlong,find,bio,parallel,Dir' --lib_dir $lib_dir
 echo ''
 
 
@@ -64,7 +64,7 @@ echo ''
 
 
 echo -e "${BOLD}Checking requirements for OrthoMCL ......${NC}"
-orthomcl_progs=(blastp makeblastdb mcl orthomclAdjustFasta \
+orthomcl_progs=(blastp makeblastdb diamond mcl orthomclAdjustFasta \
 	orthomclBlastParser orthomclLoadBlast orthomclPairs orthomclDumpPairsFiles orthomclMclToGroups)
 check_which ${orthomcl_progs[@]}
 
