@@ -23,6 +23,7 @@ source "$CWD/word_limit_per_line.sh"
 Mauve=''
 Mauve_jar=''
 ruby=ruby
+export RUBYLIB=$RUBYLIB:$CWD/lib
 
 
 ##############################################################
