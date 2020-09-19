@@ -3,15 +3,16 @@
 ##############################################################
 # A wrapper of scripts to identify recurrent gene conversion using phylogenomic methods
 # Please type "bash iSeeCE.sh" for help message.
-# Last updated: 2017/11/21
+# Last updated: 2020/09/19
 
 
 ##############################################################
+VERSION=v1.1
+
 CWD=`dirname $0`
 cd $CWD >/dev/null
 CWD=`pwd`
 cd - >/dev/null
-export RUBYLIB=$RUBYLIB:$CWD/lib
 
 source "$CWD/scripts/processbar.sh"
 source "$CWD/word_limit_per_line.sh"
@@ -37,8 +38,10 @@ ortholog_count_min=2
 is_force=false
 blast_cpu=2
 mafft_cpu=2
-bootstrap_min=0
+bootstrap=0
 is_mauve=false
+orthomcl_config_file=''
+bootstrap_min=0.5
 
 
 ##############################################################
@@ -64,9 +67,14 @@ function run_orthomcl(){
 	local indir=$1
 	local orthomcl_dir=$2
 	local blast_cpu=$3
+	local orthomcl_config_file=$4
+	local is_diamond=$5
+	local diamond_argu=""
+	[ $is_diamond == true ] && diamond_argu="--blast_prog diamond"
 
 	echo "Running OrthoMCL (which usually takes a long time) ......"
-	run_orthomcl_cmd=`bash $help2run_orthomcl --indir $indir --cpu $blast_cpu`
+
+	run_orthomcl_cmd=`bash $help2run_orthomcl --orthomcl_config $orthomcl_config_file --indir $indir --cpu $blast_cpu $diamond_argu`
 	cd $orthomcl_dir >/dev/null
 	$run_orthomcl_cmd 1>/dev/null 2>/dev/null
 
@@ -255,9 +263,14 @@ function usage(){
 	word_limit_per_line "The output directory (cannot be the current directory)" 38 40
 	echo
 
+	echo -ne "--orthomcl_config\t\t\t"
+	echo "The path to the configuration file of OrthoMCL"
+	echo -e "\t\t\t\t\tdefault: disabled"
+	echo
+
 	echo "Optional arguments:"
 
-	echo -ne "--gc_count_min|--GC_count_min\t\t"
+	echo -ne "-n|--gc_count_min|--GC_count_min\t\t"
 	word_limit_per_line "The minimum of the number of converted genes" 38
 	echo -e "\t\t\t\t\tdefault: 5"
 	echo
@@ -277,17 +290,22 @@ function usage(){
 	echo -e "\t\t\t\t\tdefault: 2"
 	echo
 
-	echo -ne "-b|--bootstrap\t\t\t\t"
-	 word_limit_per_line "The minimum support value in FastTree for a node to be considered as converted genes. It should range from 0 to 1. Note that it is different from the traditional bootstrap value. For more details, please visit http://www.microbesonline.org/fasttree/" 38 40
-	echo -e "\t\t\t\t\tdefault: 0"
+	echo -ne "--cpu\t\t\t\t"
+	echo "The number of threads for BLAST and MAFFT"
+	echo -e "\t\t\t\t\tdefault: 2"
 	echo
 
-	echo -ne "--is_mauve|--is_Mauve\t\t\t"
+	echo -ne "-b|--bootstrap\t\t\t\t"
+	 word_limit_per_line "The minimum support value in FastTree for a node to be considered as converted genes. It should range from 0 to 1. Note that it is different from the traditional bootstrap value. For more details, please visit http://www.microbesonline.org/fasttree/" 38 40
+	echo -e "\t\t\t\t\tdefault: 0.5"
+	echo
+
+	echo -ne "--mauve|--Mauve\t\t\t"
 	word_limit_per_line "Identification of syntenic orthologs will be performed with Mauve." 38 40
 	echo -e "\t\t\t\t\tdefault: disabled"
 	echo
 
-	echo -ne "--mauve|--Mauve\t\t\t\t"
+	echo -ne "--mauve_prog|--Mauve_prog\t\t\t\t"
 	echo "The path to progressiveMauve"
 	echo -e "\t\t\t\t\tdefault: disabled"
 	echo
@@ -295,6 +313,15 @@ function usage(){
 	echo -ne "--mauve_jar|--Mauve_jar\t\t\t"
 	echo "The path to Mauve.jar"
 	echo -e "\t\t\t\t\tdefault: disabled"
+	echo
+
+	echo -ne "--diamond\t\t\t\t"
+	echo "whether to perform diamond instead of blastp in OrthoMCL"
+	echo -e "\t\t\t\t\tdetaulf: off"
+	echo
+
+	echo -ne "--version\t\t\t\t"
+	echo "version"
 	echo
 
 	echo -e "-h|--h|--help\t\t\t\thelp message"
@@ -345,7 +372,12 @@ while [ $# -gt 0 ]; do
 			outdir=$2
 			shift
 			;;
-		--gc_count_min|--GC_count_min)
+		--orthomcl_config)
+			orthomcl_config_file=$2
+			cd `dirname $orthomcl_config_file` >/dev/null; d=`pwd`; b=`basename $orthomcl_config_file`; orthomcl_config_file=$d/$b; cd - >/dev/null
+			shift
+			;;
+		-n|--gc_count_min|--GC_count_min)
 			gc_count_min=$2
 			shift
 			;;
@@ -361,14 +393,19 @@ while [ $# -gt 0 ]; do
 			mafft_cpu=$2
 			shift
 			;;
+		--cpu)
+			blast_cpu=$2
+			mafft_cpu=$2
+			shift
+			;;
 		-b|--bootstrap)
 			bootstrap_min=$2
 			shift
 			;;
-		--is_mauve)
+		--mauve)
 			is_mauve=true
 			;;
-		--mauve)
+		--mauve_prog)
 			Mauve=$2
 			shift
 			;;
@@ -376,8 +413,15 @@ while [ $# -gt 0 ]; do
 			Mauve_jar=$2
 			shift
 			;;
+		--diamond)
+			is_diamond=true
+			;;
 		--force)
 			is_force=true
+			;;
+		--version|-v)
+			echo $VERSION
+			exit 0
 			;;
 		-h|--h|--help)
 			usage
@@ -399,15 +443,19 @@ if [ -z $indir ]; then
 elif [ -z $outdir ]; then
 	echo -e "${BOLD}outdir$NC has to be given by '--outdir'!"
 	usage
+elif [ -z $orthomcl_config_file ]; then
+	echo -e "${BOLD}orthomcl_config_file$NC has to be given by '--orthomcl_config'!"
+	usage
 elif [ $is_mauve == true ]; then
 	if [ -z "$Mauve" -o ! -f "$Mauve" ]; then
-		echo "Mauve has to be given by '--mauve' if '--is_mauve' is specified."
+		echo "Mauve has to be given by '--mauve_prog' if '--mauve' is specified."
 		usage
 	elif [ -z "$Mauve_jar" -o ! -f "$Mauve_jar" ]; then
-		echo "Mauve_jar has to be given by '--mauve_jar' if '--is_mauve' is specified."
+		echo "Mauve_jar has to be given by '--mauve_jar' if '--mauve' is specified."
 		usage
 	fi
 fi
+
 
 
 ##############################################################
@@ -474,7 +522,7 @@ parse_genbank_files $indir $genbank2cds
 
 [ $is_mauve == true ] && run_mauve $mauve_dir $Mauve $Mauve_jar
 
-run_orthomcl $indir $orthomcl_dir $blast_cpu
+run_orthomcl $indir $orthomcl_dir $blast_cpu $orthomcl_config_file $is_diamond
 
 run_mafft $outdir $aln_dir $selectOrthoFromMauveOrthomcl $check_aln_group $mafft_cpu
 
