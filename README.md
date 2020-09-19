@@ -47,7 +47,7 @@ As follows are some examples:
 ```bash
 #
 bash iseeCE.sh --indir genebank_dir --outdir new_dir --orthomcl_config orthomcl_config_gile
-# No. of >8 converted duplicate gene pairs in the gene family phylogeny, each conversion event supported by bootstrap >= 0.9
+# No. of >=8 converted duplicate gene pairs in the gene family phylogeny, each conversion event supported by bootstrap >= 0.9
 bash iseeCE.sh --indir genebank_dir --outdir new_dir --orthomcl_config orthomcl_config_gile --gc_count_min 8 --bootstrap 0.9
 # Use diamond (which facilitates all-against-all homolog search for OrthoMCL by >1000 times but with potential cost of lower sensitivity)
 bash iseeCE.sh --indir genebank_dir --outdir new_dir --orthomcl_config orthomcl_config_gile --diamond
