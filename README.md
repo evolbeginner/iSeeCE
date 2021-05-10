@@ -76,7 +76,7 @@ You are welcome to cite our paper (see below) for iSeeCE if you feel it is usefu
 You may need to cite corresponding papers for the use of OrthoMCL, diamond, MAFFT, FastTree, RAxML, Mauve, BioRuby and BioPerl.
 
 # Publication
-Wang, Sishuo, and Youhua Chen. "Phylogenomic analysis demonstrates a pattern of rare and long-lasting concerted evolution in prokaryotes." Communications biology 1.1 (2018): 1-11.
+Wang, S., & Chen, Y. (2018). Phylogenomic analysis demonstrates a pattern of rare and long-lasting concerted evolution in prokaryotes. Communications biology, 1(1), 1-11.
 
 # Acknowledgements
 We thank Michael Imelfort and Kranti Konganti for sharing the free script gff2fasta.pl for sequence processing.
