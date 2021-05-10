@@ -7,7 +7,7 @@
 
 
 ##############################################################
-VERSION=v1.1
+VERSION=v1.2
 
 CWD=`dirname $0`
 cd $CWD >/dev/null
@@ -43,6 +43,7 @@ bootstrap=0
 is_mauve=false
 orthomcl_config_file=''
 bootstrap_min=0.5
+is_diamond=false
 
 
 ##############################################################
