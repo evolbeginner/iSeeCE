@@ -7,7 +7,7 @@
 
 
 ##############################################################
-VERSION=v1.2
+VERSION=v1.1
 
 CWD=`dirname $0`
 cd $CWD >/dev/null
@@ -44,6 +44,7 @@ is_mauve=false
 orthomcl_config_file=''
 bootstrap_min=0.5
 is_diamond=false
+is_parse_gb=true
 
 
 ##############################################################
@@ -322,6 +323,11 @@ function usage(){
 	echo -e "\t\t\t\t\tdetaulf: off"
 	echo
 
+	echo -ne "--no_parse_gb\t\t\t\t"
+	echo "whether to parse genbank files"
+	echo -e "\t\t\t\t\tdetaulf: disabled"
+	echo
+
 	echo -ne "--version\t\t\t\t"
 	echo "version"
 	echo
@@ -417,6 +423,9 @@ while [ $# -gt 0 ]; do
 			;;
 		--diamond)
 			is_diamond=true
+			;;
+		--no_parse_gb|--no_parse_genbank)
+			is_parse_gb=false
 			;;
 		--force)
 			is_force=true
@@ -520,7 +529,7 @@ ln -s $indir $outdir/sequences 2>/dev/null
 
 
 ##############################################################
-parse_genbank_files $indir $genbank2cds
+[ $is_parse_gb == true ] && parse_genbank_files $indir $genbank2cds
 
 [ $is_mauve == true ] && run_mauve $mauve_dir $Mauve $Mauve_jar
 
