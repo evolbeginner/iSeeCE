@@ -44,6 +44,7 @@
 #pragmas
 use 5.010;
 use strict;
+use feature qw( switch ); # to mute the warning message "when is experimental"
 #use warnings;
 
 #core Perl modules
