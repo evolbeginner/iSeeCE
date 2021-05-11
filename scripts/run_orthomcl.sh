@@ -91,11 +91,10 @@ fi
 
 
 function read_orthomcl_config(){
-#dbLogin=sswang
-#dbPassword=123456
 	local config_file=$1
 	user_argu="-u"`grep '^dbLogin' $config_file | cut -f 2 -d =`
 	passwd_argu="-p"`grep '^dbPassword' $config_file | cut -f 2 -d =`
+	mysql_db=`grep ^dbConnectString $config_file | awk -F':' '{print $NF}'`
 }
 
 
@@ -203,7 +202,9 @@ read_para $*;
 
 read_orthomcl_config $orthomcl_config_file
 
-mysql $user_argu $passwd_argu -e 'drop database orthomcl; create database orthomcl;';
+#mysql $user_argu $passwd_argu -e 'drop database if exists orthomcl; create database orthomcl;';
+mysql $user_argu $passwd_argu -e "drop database if exists $mysql_db; create database $mysql_db;";
+
 
 ###	-------------------------------------------------------------------	###
 orthomclInstallSchema $orthomcl_config_file $install_schema_log_file;
@@ -217,7 +218,5 @@ prepare_compliant
 orthomcl_2
 
 clear_files
-
-mysql $user_argu $passwd_argu -e 'drop database orthomcl; create database orthomcl;';
 
 
