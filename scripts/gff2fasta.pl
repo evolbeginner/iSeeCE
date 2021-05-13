@@ -44,7 +44,8 @@
 #pragmas
 use 5.010;
 use strict;
-use feature qw( switch ); # to mute the warning message "when is experimental"
+use feature qw( switch );
+no if $] >= 5.018, warnings => qw( experimental::smartmatch );
 #use warnings;
 
 #core Perl modules
