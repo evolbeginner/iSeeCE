@@ -2,7 +2,7 @@
 
 
 # run_orthomcl:	run orthomcl automatically
-# last updated on 2014-04-08
+# last updated on 2021-05-14
 # To see its usage, please type 'run_orthomcl.sh --h' to see its usage.
 # Author: Sishuo Wang (sishuowang@hotmail.com; wangsishuo@yeah.net) from the department of Botany, the University of British Columbia
 
@@ -162,7 +162,13 @@ fi
 
 orthomcl_2(){
 	orthomclBlastParser all_VS_all.out.tab compliantFasta > similarSequences.txt
-	awk 'BEGIN{FS="\t"}{pairs[$1"\t"$2]+=1; all[$1"\t"$2]=$0}END{for(i in all){print all[i]}}' similarSequences.txt | sponge similarSequences.txt
+	if which sponge >/dev/null 2>&1; then
+		awk 'BEGIN{FS="\t"}{pairs[$1"\t"$2]+=1; all[$1"\t"$2]=$0}END{for(i in all){print all[i]}}' similarSequences.txt | sponge similarSequences.txt
+	else
+		TMPFILE=$(mktemp)
+		awk 'BEGIN{FS="\t"}{pairs[$1"\t"$2]+=1; all[$1"\t"$2]=$0}END{for(i in all){print all[i]}}' similarSequences.txt > $TMPFILE
+		mv $TMPFILE similarSequences.txt
+	fi
 	orthomclLoadBlast $orthomcl_config_file similarSequences.txt
 	if [ -e pairs ]; then rm pairs -rf; fi;
 	orthomclPairs $orthomcl_config_file orthomcl_pairs.log cleanup=no
