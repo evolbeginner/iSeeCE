@@ -46,7 +46,7 @@ bash iSeeCE.sh -h
 ```
 
 As follows are some examples:
-```bash
+```
 # default: gc_count_min=2, bootstrap=0.5
 bash iseeCE.sh --indir genebank_dir --outdir new_dir --orthomcl_config orthomcl_config_gile
 # No. of >=8 converted duplicate gene pairs in the gene family phylogeny, each conversion event supported by bootstrap >= 0.9
